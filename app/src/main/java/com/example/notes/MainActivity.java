@@ -10,9 +10,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    SharedPreferences preferences;
+    TextView textView;
+    String language;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -30,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.settings :
                 Toast.makeText(this, "settings selected", Toast.LENGTH_SHORT).show();
+                showDialog();
                 return true;
 
             case R.id.help :
@@ -42,27 +49,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setLanguage(String lang){
+        preferences.edit().putString("Language", lang).apply();
+        language = lang;
+        textView.setText(language);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        textView = findViewById(R.id.textView);
+        preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        language = preferences.getString("Language", "Default");
 
+        if(language.equals("Default"))
+            showDialog();
+
+        textView.setText(language);
+    }
+
+    private void showDialog(){
         new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(android.R.drawable.ic_btn_speak_now)
                 .setTitle("Select a language")
                 .setMessage("Choose a language in which you want to see the app contents")
                 .setPositiveButton("English", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        preferences.edit().putString("Language", "English").apply();
+                        setLanguage("English");
                     }
                 })
                 .setNegativeButton("Hindi", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        preferences.edit().putString("Language", "Hindi").apply();
+                        setLanguage("Hindi");
                     }
                 })
                 .show();
