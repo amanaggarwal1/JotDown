@@ -25,7 +25,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ListView notesLV;
-    private List<String> notes = new ArrayList<>();
+    static List<String> notesTitle = new ArrayList<>();
+    static List<String> notesContents = new ArrayList<>();
+    static ArrayAdapter arrayAdapter;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,9 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
         notesLV = findViewById(R.id.notesLV);
 
-        notes.add("Start here...");
+        if(notesTitle.size() == 0) {
+            notesTitle.add("Start here...");
+            notesContents.add("");
+        }
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notes);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notesTitle);
         notesLV.setAdapter(arrayAdapter);
 
         notesLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
