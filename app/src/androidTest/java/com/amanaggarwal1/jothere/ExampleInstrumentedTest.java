@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.amanaggarwal1.jothere;
 
 import android.content.Context;
 

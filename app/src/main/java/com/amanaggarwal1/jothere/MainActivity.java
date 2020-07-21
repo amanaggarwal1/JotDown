@@ -1,4 +1,4 @@
-package com.example.notes;
+package com.amanaggarwal1.jothere;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -15,10 +15,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextClock;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                 createNewNote();
                 return true;
 
-
             default:
                 return false;
         }
@@ -62,6 +63,22 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter.notifyDataSetChanged();
     }
 
+    public void saveArrayList(ArrayList<String> list, String key){
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        editor.putString(key, json);
+        editor.apply();     // This line is IMPORTANT !!!
+    }
+
+    public ArrayList<String> getArrayList(String key){
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(key, null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         notesLV = findViewById(R.id.notesLV);
+
+        if(getArrayList("Titles") != null && getArrayList("Contents") != null) {
+            notesTitle = getArrayList("Titles");
+            notesContents = getArrayList("Contents");
+        }
 
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notesTitle);
         notesLV.setAdapter(arrayAdapter);
@@ -107,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                         notesTitle.remove(itemToBeDeleted);
                         notesContents.remove(itemToBeDeleted);
                         arrayAdapter.notifyDataSetChanged();
+                        saveArrayList((ArrayList<String>) MainActivity.notesTitle, "Titles");
+                        saveArrayList((ArrayList<String>) MainActivity.notesContents, "Contents");
                     }
                 })
                 .setNegativeButton("No, Keep it", null)
