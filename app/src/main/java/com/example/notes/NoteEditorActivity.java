@@ -18,14 +18,18 @@ public class NoteEditorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         noteId = intent.getIntExtra("noteId", -1);
 
-        if(noteId != -1) {
-            if (MainActivity.notesTitle.get(noteId).equals("Start here..."))
-                titleET.setText("");
-            else
-                titleET.setText(MainActivity.notesTitle.get(noteId));
-
-            contentET.setText(MainActivity.notesContents.get(noteId));
+        if(noteId == -1) {
+            MainActivity.createNewNote();
+            noteId = MainActivity.notesTitle.size() - 1;
         }
+
+        if (MainActivity.notesTitle.get(noteId).equals("Start here..."))
+            titleET.setText("");
+        else
+            titleET.setText(MainActivity.notesTitle.get(noteId));
+
+        contentET.setText(MainActivity.notesContents.get(noteId));
+
     }
 
     private void updateNote(){

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void createNewNote(){
+    static void createNewNote(){
         notesTitle.add("Start here...");
         notesContents.add("");
         arrayAdapter.notifyDataSetChanged();
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         notesLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -88,25 +87,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        notesLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showDeleteDialog(i);
+                return true;
+            }
+        });
     }
 
-    private void showDialog(){
+    private void showDeleteDialog(final int itemToBeDeleted){
         new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_btn_speak_now)
-                .setTitle("Select a language")
-                .setMessage("Choose a language in which you want to see the app contents")
-                .setPositiveButton("English", new DialogInterface.OnClickListener() {
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setTitle("Delete Note")
+                .setMessage("Do you really want to delete this note?\nYou will no longer able to access this note.")
+                .setPositiveButton("Yes, Delete it", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //setLanguage("English");
+                        notesTitle.remove(itemToBeDeleted);
+                        notesContents.remove(itemToBeDeleted);
+                        arrayAdapter.notifyDataSetChanged();
                     }
                 })
-                .setNegativeButton("Hindi", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //setLanguage("Hindi");
-                    }
-                })
+                .setNegativeButton("No, Keep it", null)
                 .show();
     }
 }
