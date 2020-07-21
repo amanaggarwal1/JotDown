@@ -5,20 +5,27 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences preferences;
-    TextView textView;
-    String language;
+    private ListView notesLV;
+    private List<String> notes = new ArrayList<>();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,25 +56,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setLanguage(String lang){
-        preferences.edit().putString("Language", lang).apply();
-        language = lang;
-        textView.setText(language);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.textView);
-        preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-        language = preferences.getString("Language", "Default");
+        notesLV = findViewById(R.id.notesLV);
 
-        if(language.equals("Default"))
-            showDialog();
+        notes.add("Start here...");
 
-        textView.setText(language);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notes);
+        notesLV.setAdapter(arrayAdapter);
+
+        notesLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this , NoteEditorActivity.class);
+                intent.putExtra("noteId", i);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void showDialog(){
@@ -78,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("English", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        setLanguage("English");
+                        //setLanguage("English");
                     }
                 })
                 .setNegativeButton("Hindi", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        setLanguage("Hindi");
+                        //setLanguage("Hindi");
                     }
                 })
                 .show();
