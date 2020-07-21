@@ -44,19 +44,22 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()){
-            case R.id.settings :
-                Toast.makeText(this, "settings selected", Toast.LENGTH_SHORT).show();
-                showDialog();
+            case R.id.addNote :
+                Toast.makeText(this, "Your new note is ready!", Toast.LENGTH_SHORT).show();
+                createNewNote();
                 return true;
 
-            case R.id.help :
-                Toast.makeText(this, "help", Toast.LENGTH_SHORT).show();
-                return true;
 
             default:
                 return false;
         }
 
+    }
+
+    private void createNewNote(){
+        notesTitle.add("Start here...");
+        notesContents.add("");
+        arrayAdapter.notifyDataSetChanged();
     }
 
 
@@ -67,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
         notesLV = findViewById(R.id.notesLV);
 
-        if(notesTitle.size() == 0) {
-            notesTitle.add("Start here...");
-            notesContents.add("");
-        }
-
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notesTitle);
         notesLV.setAdapter(arrayAdapter);
+
+        if(notesTitle.size() == 0) {
+           createNewNote();
+        }
+
+
 
         notesLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

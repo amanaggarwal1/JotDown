@@ -2,9 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Settings"
-        android:id= "@+id/settings" />
-    <item
-        android:title = "help"
-        android:id = "@+id/help" />
+        android:title="Add Note"
+        android:id= "@+id/addNote" />
 </menu>
